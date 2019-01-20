@@ -14,3 +14,13 @@ ssh-keygen
 ssh-copy-id ansible@target
 ```
 Make sure you copy the key to the host itself too.
+
+Python is needed for ansible to work so you should have at least a version 2.* on each system against which you work.
+
+If you use a centos based machine perform these tasks before you do anything.
+
+```bash
+yum update 
+
+yum install python python-devel ansible openssl
+```
