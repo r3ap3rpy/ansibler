@@ -39,3 +39,18 @@ visudo
 
 ansible ALL=(ALL) NOPASSWD: ALL
 ```
+
+In order to install [ansible-cmdb](https://ansible-cmdb.readthedocs.io/en/latest/usage/) to generate reports do the following.
+
+```bash
+sudo su - 
+pip install --upgrage pip
+pip install ansible-cmdb
+```
+
+To generate the report from the facts do the following.
+
+```bash
+ansible -m setup --tree facts/ all
+ansible-cmdb facts/ > overview.html
+```
