@@ -24,3 +24,18 @@ yum update
 
 yum install python python-devel ansible openssl
 ```
+
+Steps to perform on each host for key based authentication.
+
+```bash
+adduser ansible
+passwd ansible
+```
+
+Use the visudo to add passwordless sudo to the user. Look for the line root and add the folowing below.
+
+```bash
+visudo
+
+ansible ALL=(ALL) NOPASSWD: ALL
+```
