@@ -1,0 +1,17 @@
+--- # About removing nginx and notifiying handler for stop
+- hosts: ubuntu
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: Remove nginx
+    notify: disable and stop nginx  
+    apt:
+      name: nginx
+      state: absent
+  handlers:
+  - name: disable and stop nginx
+    service:
+      name: nginx
+      enabled: no
+      state: stopped
+

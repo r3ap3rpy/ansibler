@@ -1,0 +1,11 @@
+--- # Change the state of '{{ my_pkg }}' to '{{ my_state }}' on '{{ my_host }}'
+- hosts: '{{ my_host }}'
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: Change the state of '{{ my_pkg }}' to '{{ my_state }}' on '{{ my_host }}'
+    apt:
+      name: '{{ my_pkg }}'
+      state: '{{ my_state }}'
+    register: result
+  - debug: var=result
