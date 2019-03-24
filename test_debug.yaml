@@ -1,0 +1,12 @@
+---
+- hosts: raspberry
+  vars:
+    - var_thing: "give you up"
+  tasks:
+  - name: give you up
+    debug: msg = "Never gonna {{ var_thing }}"
+  - name: register
+    command: echo -e "Never gonna {{ var_thing }}"
+    register: results
+  - name: show results
+    debug: msg="{{ results.stdout_lines }}"---

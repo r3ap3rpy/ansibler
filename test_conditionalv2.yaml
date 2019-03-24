@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Remove Apache2
+    apt: name=apache2 state=absent
+    when: ansible_os_family == "Debian"
+  - name: Remove Httpd
+    yum: name=httpd state=absent
+    when: ansible_os_family == "RedHat"

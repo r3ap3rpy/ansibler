@@ -1,0 +1,14 @@
+---
+- hosts: all
+  serial: 1
+  tasks:
+    - name: "Disable server: {{ inventory.hostname }} on loadbalancer"
+      debug:
+        msg: "Disable server: {{ inventory.hostname }} on loadbalancer"
+    - name: "Update the server: {{ inventory.hostname }}"
+      debug:
+        msg: "Update the server: {{ inventory.hostname }}"
+    - name: "Enable server: {{ inventory.hostname }} on loadbalancer"
+      debug:
+        msg: "Enable server: {{ inventory.hostname }} on loadbalancer"
+      

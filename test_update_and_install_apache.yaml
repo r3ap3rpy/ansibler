@@ -1,0 +1,7 @@
+---
+- include: update_systems.yaml
+- hosts: all
+  become: yes
+  tasks:
+  - name: "Install apache"
+    import_playbook: install_apache.yaml

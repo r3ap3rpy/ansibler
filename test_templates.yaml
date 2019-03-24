@@ -1,0 +1,30 @@
+--- 
+- hosts: all
+  become: yes
+  tasks:
+  - name: Install Apache2
+    apt: name=apache2 state=latest
+    when: ansible_os_family == "Debian"
+  - name: Install Httpd
+    yum: name=httpd state=latest
+    when: ansible_os_family == "RedHat"
+  - name: Copy template
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+      mode: 0777
+  - name: Disable firewall cmd
+    shell: |
+      systemctl disable firewalld
+      systemctl stop firewalld
+    when: ansible_os_family == "RedHat"
+  - name: Enable Httpd
+    shell: |
+      systemctl enable httpd
+      systemctl start httpd
+    when: ansible_os_family == "RedHat"    
+  - name: Enable Apache2
+    shell: |
+      systemctl enable apache2
+      systemctl start apache2
+    when: ansible_os_family == "Debian"  
