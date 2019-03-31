@@ -1,0 +1,67 @@
+--- 
+- hosts: centos
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Install dependencies for docker
+    yum:
+      name: ['lvm2','yum-utils','device-mapper-persistent-data']
+      state: latest
+  - name: Adding the docker repo
+    shell: |
+      yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  - name: Actually installing docker
+    yum:
+      name: ['docker-ce','docker-ce-cli','containerd.io']
+      state: latest
+  - name: Start and enable docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
+  - name: Add ansible to the docker group
+    user:
+      name: ansible
+      group: docker
+      append: yes
+  - name: Download pip installer
+    get_url:
+      url: https://bootstrap.pypa.io/get-pip.py
+      dest: /tmp/get-pip.py
+  - name: Install pip
+    shell: |
+      /usr/bin/python /tmp/get-pip.py
+  - name: Install docker-py
+    pip:
+      name: docker-py
+      state: latest
+  - name: Set SELinux to permissive
+    selinux:
+      policy: targeted
+      state: permissive
+  - name: Copy docker file
+    copy:
+      src: docker/Dockerfile
+      dest: /home/ansible/Dockerfile
+    become_user: ansible
+  - name: Copy python app
+    copy:
+      src: docker/app.py
+      dest: /home/ansible/app.py
+    become_user: ansible
+  - name: Build the image
+    become_user: ansible
+    docker_image:
+      name: webapp
+      path: ~/
+      state: build
+  - name: Start the container
+    docker_container:
+      name: webapp
+      image: webapp
+      state: started
+      ports:
+        - "9999:9999"
+  - name: Check that you can connect (GET) to a page and it returns a status 200
+    uri:
+      url: "http://localhost:9999"

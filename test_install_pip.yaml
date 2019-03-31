@@ -1,0 +1,26 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: Download pip installer
+    get_url:
+      url: https://bootstrap.pypa.io/get-pip.py
+      dest: /tmp/get-pip.py
+  - name: Install pip
+    shell: |
+      /usr/bin/python /tmp/get-pip.py
+  - name: Create app folder
+    file:
+      name: /opt/pythonapp
+      state: directory
+      recurse: yes
+  - name: Install virtualenv module
+    pip:
+      name: virtualenv
+      state: latest
+  - name: Create virtualenv for app
+    pip:
+      name: bottle
+      state: latest
+      virtualenv: /opt/pythonapp/appenv
