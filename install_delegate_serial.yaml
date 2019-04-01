@@ -1,0 +1,16 @@
+---
+- hosts: centos
+  gather_facts: no
+  serial: 1
+  tasks:
+  - name: Start the container
+    docker_container:
+      name: webapp
+      image: webapp
+      state: started
+      ports:
+        - "9999:9999"
+  - name: "Check that you can connect (GET) to a page and it returns a status 200 on host: {{ inventory_hostname }}"
+    uri:
+      url: "http://{{ inventory_hostname}}:9999"
+    delegate_to: "{{ groups['checker'][0] }}"

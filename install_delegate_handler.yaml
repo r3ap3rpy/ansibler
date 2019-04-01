@@ -1,0 +1,18 @@
+---
+- hosts: centos
+  gather_facts: no
+  tasks:
+  - name: Start the container
+    docker_container:
+      name: webapp
+      image: webapp
+      state: started
+      ports:
+        - "9999:9999"
+    notify: checker
+  handlers:
+  - name: checker
+    uri:
+      url: "http://{{item}}:9999"
+    delegate_to: "{{ groups['checker'][0] }}"
+    with_items: "{{groups['centos']}}"
