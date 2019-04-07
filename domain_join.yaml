@@ -1,0 +1,57 @@
+---
+- hosts: centos
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Install dependencies
+    yum:
+      name: ['realmd','sssd','oddjob','oddjob-mkhomedir','adcli','krb5-workstation','samba-common-tools','sssd-ad']
+      state: latest
+  - name: Actually join the domain
+    shell: |
+      echo "Start123" | realm join reaperdome -v -U Administrator
+      realm permit -g LINADMIN@redwood.com
+      realm permit -g SDESK@redwood.com
+      realm list
+    register: results
+  - name: See the results
+    debug:
+      msg: "{{ results }}"
+
+  - name: Edit sshd config enable password authentication
+    replace:
+      path: /etc/ssh/sshd_config
+      regexp: 'PasswordAuthentication no'
+      replace: 'PasswordAuthentication yes'
+  - name: Edit sshd config
+    replace:
+      path: /etc/ssh/sshd_config
+      regexp: '#KerberosAuthentication no'
+      replace: 'KerberosAuthentication no'
+  - name: Edit sshd config
+    replace:
+      path: /etc/ssh/sshd_config
+      regexp: '#KerberosOrLocalPasswd yes'
+      replace: 'KerberosOrLocalPasswd yes'
+  - name: Edit sshd config
+    replace:
+      path: /etc/ssh/sshd_config
+      regexp: '#KerberosTicketCleanup yes'
+      replace: 'KerberosTicketCleanup yes'
+  - name: Edit sshd config
+    replace:
+      path: /etc/ssh/sshd_config
+      regexp: '#KerberosGetAFSToken no'
+      replace: 'KerberosGetAFSToken no'
+  - name: Edit sshd config
+    replace:
+      path: /etc/ssh/sshd_config
+      regexp: '#KerberosUseKuserok yes'
+      replace: 'KerberosUseKuserok yes'
+  - name: restart sshd
+    service:
+      name: sshd
+      state: restarted
+  - name: Add sudoers
+    shell: |
+      echo "%LINADMIN@redwood.com ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
