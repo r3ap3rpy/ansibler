@@ -1,0 +1,17 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: Get the contents of the SSHD config file
+    command: cat /etc/ssh/sshd_config
+    register: sshd_config
+  - name: Get the output of the timedatectl
+    command: timedatectl
+    register: timedatectl_output
+  - name: Show the sshd_config
+    debug:
+      msg: "{{sshd_config.stdout_lines}}"
+  - name: Show the timedatectl output
+    debug:
+      msg: "{{timedatectl_output.stdout}}"

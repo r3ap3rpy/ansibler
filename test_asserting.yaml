@@ -1,0 +1,24 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Get the whole sshd_config file
+    command: cat /etc/ssh/sshd_config
+    register: sshd_config
+  - name: Assert that pubkeyauth is disabled
+    assert:
+      that:
+        - "'#PublickeyAuthentication yes' in sshd_config.stdout_lines"
+      success_msg: "Yes it is disabled"
+      fail_msg: "Oh no it is not disabled"
+  - name: Kerberos is fully disabled
+    assert:
+      that: 
+        - "'#KerberosAuthentication no' in sshd_config.stdout_lines"
+        - "'#KerberosOrLocalPasswd yes' in sshd_config.stdout_lines"
+        - "'#KerberosTicketCleanup yes' in sshd_config.stdout_lines"
+        - "'#KerberosGetAFSToken no' in sshd_config.stdout_lines"
+        - "'#KerberosUserKuserok yes' in sshd_config.stdout_lines"
+      success_msg: "Kerberos shall not enter this machine."
+      fail_msg: "Unfortunately the gates of hell are open"
