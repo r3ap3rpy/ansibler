@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Check for sshd daemon if it is running
+    service:
+      name: sshd
+      state: running
+    tags:
+      - sshd
+
+  - name: Check for a file
+    file:
+      path: /etc/sshd/sshd_config
+      state: present
+    tags:
+      - notsshd

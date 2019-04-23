@@ -1,0 +1,6 @@
+mkdir /etc/ansible/facts.d
+vi /etc/ansible/facts.d/custom.fact
+
+[general]
+python=awesome
+ansible=alsoawesome
