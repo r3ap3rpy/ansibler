@@ -1,0 +1,37 @@
+---
+- hosts: cisco
+  gather_facts: no
+  tasks:
+  - name: Lets configure login banner
+    ios_banner:
+      banner: login
+      text: |
+        This device is used for the network related videos
+        This is the login banner.
+      state: present
+
+  - name: Lets configure motd banner
+    ios_banner:
+      banner: motd
+      text: |
+        This is the MOTD message that we have configure in the video
+      state: present
+
+  - name: Show the version of the devices
+    ios_command:
+      commands:
+        - show version
+    register: version
+
+  - name: Show the value of version
+    debug:
+      msg: "{{version}}"
+
+  - name: Show the ip interfaces
+    ios_command:
+      commands:
+        - show ip int brief
+    register: ipint
+  - name: Show the value of ipint
+    debug:
+      msg: "{{ipint}}"

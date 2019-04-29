@@ -1,0 +1,7 @@
+---
+- hosts: centos
+  gather_facts: no
+  tasks:
+  - name: "Echo sensitive information"
+    command: "echo {{SENSITIVE}}"
+    no_log: true

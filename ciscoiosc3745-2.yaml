@@ -1,0 +1,11 @@
+---
+interfaces:
+  - interface FastEthernet3/0
+  - interface FastEthernet3/1
+  - interface FastEthernet3/2
+  - interface FastEthernet3/3
+  - interface FastEthernet3/4
+  - interface FastEthernet3/5
+  - interface FastEthernet3/6
+  - interface FastEthernet3/7
+  - interface FastEthernet3/8

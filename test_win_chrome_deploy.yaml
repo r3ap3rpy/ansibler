@@ -1,0 +1,45 @@
+- hosts: win
+  gather_facts: no
+  tasks:
+  - name: Copy the bundle.zip
+    win_copy:
+      src: GoogleChromeEnterpriseBundle64.zip
+      dest: C:\\Temp\\
+
+  - name: Extract the bundle
+    win_unzip:
+      src: c:\\Temp\\GoogleChromeEnterpriseBundle64.zip
+      dest: C:\\Temp\\Chrome
+
+  - name: Install Chrome
+    win_package:
+      path: C:\\Temp\\Chrome\\Installers\\GoogleChromeStandaloneEnterprise64.msi
+      product_id: '{B93553B7-F366-388E-ADB8-EDEAC41EADC2}'
+      wait: yes
+      state: present
+    when: ACTION == "Install"
+
+  - name: Uninstall Chrome
+    win_package:
+      path: C:\\Temp\\Chrome\\Installers\\GoogleChromeStandaloneEnterprise64.msi
+      product_id: '{B93553B7-F366-388E-ADB8-EDEAC41EADC2}'
+      wait: yes
+      state: absent
+    when: ACTION == "Uninstall"
+
+#  - name: Uninstall Chrome Update helper
+#    win_package:
+#      path: C:\\Temp\\Chrome\\Installers\\GoogleChromeStandaloneEnterprise64.msi
+#      wait: yes
+#      state: absent
+#    when: ACTION == "Uninstall"
+
+  - name: Clean up the bundle.zip
+    win_file:
+      path: C:\\Temp\\GoogleChromeEnterpriseBundle64.zip
+      state: absent
+
+  - name: Clean up the bundle
+    win_file:
+      path: C:\\Temp\\Chrome
+      state: absent

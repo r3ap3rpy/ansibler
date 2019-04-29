@@ -1,0 +1,19 @@
+---
+- hosts: "{{DEVICE}}"
+  become: yes
+  gather_facts: no
+  vars_files:
+    - "{{DEVICE}}.yaml"
+  tasks:
+  - name: Decomission ports, shutdown and dummy vlan
+    ios_config:
+      lines:
+        - description FREE
+        - switchport
+        - switchport access vlan 888
+        - switchport mode access
+        - shutdown
+        - no cdp enable
+      parents: "{{item}}"
+    with_items:
+      - "{{interfaces}}"

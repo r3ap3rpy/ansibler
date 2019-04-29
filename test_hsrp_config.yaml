@@ -1,0 +1,21 @@
+---
+- hosts: c3745
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Configure HSRP IP 172.28.128.100 on -1
+    ios_config:
+      lines:
+        - standby 1 ip 172.28.128.100
+        - standby priority 100
+        - standby 1 preempt
+      parents: interface FastEthernet0/0
+    when: inventory_hostname == 'ciscoiosc3745-1'
+
+  - name: Configure HSRP IP 172.28.128.100 on -2
+    ios_config:
+      lines:
+        - standby 1 ip 172.28.128.100
+        - standby 1 preempt
+      parents: interface FastEthernet0/0
+    when: inventory_hostname == 'ciscoiosc3745-2'

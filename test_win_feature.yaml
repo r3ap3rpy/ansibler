@@ -1,0 +1,22 @@
+---
+- hosts: win
+  gather_facts: no
+  tasks:
+  - name: Install the TFTP Client
+    win_feature:
+      name: TFTP-Client
+      state: present
+  - name: Install the Telnet Client
+    win_feature:
+      name: Telnet-Client
+      state: present
+  - name: Install IIS web server
+    win_feature:
+      name: Web-Server
+      state: present
+      include_sub_features: yes
+      include_management_tools: yes
+    register: win_feature
+  - name: Reboot if necessary
+    win_reboot:
+    when: win_feature.reboot_required
