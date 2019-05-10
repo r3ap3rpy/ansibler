@@ -1,0 +1,17 @@
+---
+- hosts: win
+  gather_facts: no
+  tasks:
+  - name: Manage firefox
+    win_chocolatey:
+      name: firefox
+      state: present
+  - name: Manage notepad++
+    win_chocolatey:
+      name: notepadplusplus
+      version: 6.6
+      state: present
+  - name: Updates all choco packages
+    win_chocolatey:
+      name: all
+      state: latest

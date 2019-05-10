@@ -1,0 +1,15 @@
+---
+- hosts: "{{DEVICE}}"
+  vars_files:
+    - "{{DEVICE}}.yaml"
+  tasks:
+  - name: Configure new ports
+    ios_config:
+      lines:
+        - description {{item.value.server}} {{item.value.description}}
+        - switchport
+        - switchport access vlan {{item.value.vlan}}
+        - switchport mode access
+        - no shutdown
+      parents: "{{item.value.name}}"
+    with_dict: "{{interfaces}}"

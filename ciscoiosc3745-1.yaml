@@ -1,0 +1,17 @@
+---
+interfaces:
+  interface_Fa3/10:
+    name: interface Fa3/10
+    vlan: 345
+    description: Customer LAN
+    server: CustomerA
+  interface_Fa3/11:
+    name: interface Fa3/11
+    vlan: 645
+    description: Storage LAN
+    server: CustomerA
+  interface_Fa3/12:
+    name: interface Fa3/12
+    vlan: 945
+    description: Admin LAN
+    server: CustomerA
