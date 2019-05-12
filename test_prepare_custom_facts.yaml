@@ -1,0 +1,38 @@
+---
+- hosts: centos
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Create facts.d
+    file:
+      path: /etc/ansible/facts.d
+      owner: ansible
+      group: ansible
+      state: directory
+      recurse: yes
+  - name: Create ini style custom fact file
+    file:
+      path: /etc/ansible/facts.d/custom_ini.fact
+      owner: ansible
+      group: ansible
+      state: touch
+  - name: Add the custom fact
+    lineinfile:
+      path: /etc/ansible/facts.d/custom_ini.fact
+      line: "[general]"
+  - name: Add the custom fact part 2
+    lineinfile:
+      path: /etc/ansible/facts.d/custom_ini.fact
+      line: "a=10"
+  - name: Add the custom fact part 3
+    lineinfile:
+      path: /etc/ansible/facts.d/custom_ini.fact
+      line: "b=20"
+  - name: Copy the script to the facts.d
+    copy:
+      src: test_fact.fact
+      dest: /etc/ansible/facts.d/test_fact.fact
+  - name: Change the mode of the script
+    file:
+      path: /etc/ansible/facts.d/test_fact.fact
+      mode: 0755
