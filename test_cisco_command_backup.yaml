@@ -1,0 +1,17 @@
+---
+- hosts: "{{FQDN}}"
+  gather_facts: no
+  tasks:
+  - name: "Read the command: <<{{Command}}>> output to a variable!"
+    ios_command:
+      commands:
+        - "{{Command}}"
+    register: output
+  - name: "See whats in there."
+    debug:
+      msg: "{{output.stdout}}"
+  - name: "Write the config to a local file"
+    copy:
+      content: "{{output.stdout}}"
+      dest: "/tmp/{{FQDN}}-{{Command.replace(' ','')}}.bak"
+    delegate_to: localhost
