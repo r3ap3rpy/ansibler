@@ -1,5 +1,5 @@
 ---
-- hosts: win
+- hosts: windj
   gather_facts: no
   tasks:
   - name: Install the TFTP Client
