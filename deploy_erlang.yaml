@@ -1,0 +1,23 @@
+---
+- hosts: 2019A
+  gather_facts: no
+  vars:
+    - ERL: 'otp_win64_22.1.exe'
+  tasks:
+  - name: "Create C:\\Temp"
+    win_file:
+      path: C:\Temp
+      state: directory
+  - name: "Copy erlang.exe to the C:\\Temp"
+    win_copy:
+      src: '~/{{ERL}}'
+      dest: C:\Temp\{{ERL}}
+  - name: "Uninstall previous version"
+    win_shell: | 
+      Start-Process -FilePath (Get-ItemProperty -Path ((Get-ChildItem -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\| Where-Object {$_.Name -match "Erlang"}).Name -replace "HKEY_LOCAL_MACHINE","HKLM:")).UninstallString -ArgumentList "/S" -Wait -NoNewWindow
+  - name: "Install the latest version"
+    win_shell: |
+      Start-Process -FilePath C:\Temp\{{ERL}} -ArgumentList "/S" -Wait -NoNewWindow
+      $ERLANG_HOME = ((Get-ChildItem HKLM:\SOFTWARE\Wow6432Node\Ericsson\Erlang)[0] | Get-ItemProperty).'(default)'    
+      [System.Environment]::SetEnvironmentVariable("ERLANG_HOME", $ERLANG_HOME, "Machine")
+
