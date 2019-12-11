@@ -1,0 +1,39 @@
+---
+- hosts: 2019A
+  gather_facts: no
+  tasks:
+  - name: "Download wireshark"
+    get_url:
+      url: https://1.eu.dl.wireshark.org/win64/Wireshark-win64-3.0.7.exe
+      dest: ~/wireshark.exe
+    delegate_to: localhost
+  - name: "Download nmap"
+    get_url:
+      url: https://nmap.org/dist/nmap-7.80-setup.exe
+      dest: ~/nmap.exe
+    delegate_to: localhost
+  - name: "Create folder for C:\\temp"
+    win_file:
+      path: C:\temp
+      state: directory
+  - name: "Copy Wireshark and nmapi"
+    win_copy:
+      src: '~/{{item}}'
+      dest: C:\temp\{{item}}
+    with_items:
+      - 'wireshark.exe'
+      - 'nmap.exe'
+  - name: "Uninstalling previous version of nmap"
+    win_shell: | 
+      Start-Process -FilePath (Get-ItemProperty -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Nmap -Name UninstallString).UninstallString -ArgumentList "/S" -Wait -NoNewWindow
+  - name: "Uninstalling previous version of wireshark"
+    win_shell: | 
+      Start-Process -FilePath (Get-ItemProperty -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\WireShark -Name UninstallString).UninstallString -ArgumentList "/S" -Wait -NoNewWindow
+  - name: "Install nmap"
+    win_shell: |
+      Start-Process -FilePath C:\temp\nmap.exe -ArgumentList "/S" -Wait -NoNewWindow
+    ignore_errors: yes
+  - name: "Install wireshark"
+    win_shell: | 
+      Start-Process -FilePath C:\temp\wireshark.exe -ArgumentList "/NCRC","/S","/desktopicon=yes","/quicklaunchicon=yes" -Wait -NoNewWindow
+
