@@ -1,0 +1,33 @@
+---                                                                                      
+- hosts: 2019A                                                                           
+  gather_facts: no                                                                       
+  become: no                                                                             
+  tasks:                                                                                 
+  - name: "Create script folder"                                                         
+    win_file:                                                                            
+      path: C:\Scripts                                                                   
+      state: directory                                                                   
+  - name: "App directory"                                                                
+    win_file:                                                                            
+      path: C:\Scripts\App                                                               
+      state: directory                                                                   
+  - name: "Create app config directory"                                                  
+    win_file:                                                                            
+      path: C:\Scripts\App\Config                                                        
+      state: directory                                                                   
+  - name: "Download config file for app"                                                 
+    get_url:                                                                             
+      url: "http://{{proget_host}}:8624/endpoints/Config/content/App.conf"               
+      dest: /tmp/App.conf                                                                
+      url_username: "{{proget_user}}"                                                    
+      url_password: "{{proget_pass}}"                                                    
+    delegate_to: localhost                                                               
+  - name: "Copy App.conf to the remote host!"                                            
+    win_copy:                                                                            
+      src: /tmp/App.conf                                                                 
+      dest: C:\Scripts\App\Config\App.conf                                               
+  - name: "Remove App.conf from tmp"                                                     
+    file:                                                                                
+      path: /tmp/App.conf                                                                
+      state: absent                                                                      
+    delegate_to: localhost                                                               
