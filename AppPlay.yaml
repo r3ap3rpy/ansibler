@@ -1,0 +1,33 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+  vars:
+    - chunksize: 3
+  tasks:
+  - name: "Get the number of users"
+    shell: "grep -i 'user=' /home/ansible/app.config | wc -l"
+    register: usernames
+  - name: "How many users we have?"
+    debug:
+      msg: "The user name count is: {{usernames.stdout}}"
+  - name: "Set section fact"
+    set_fact:
+      sections: "{{usernames.stdout | int}}"
+  - name: "Set chunk per section"
+    set_fact:
+      chunkpersect: "{{(sections |int // chunksize)}}"
+  - name: "What do we have"
+    debug:
+      msg: "{{usernames.stdout}} {{sections}} {{chunkpersect}}"
+  - name: "Creat cronjob for the chunks!"
+    cron:
+      name: "Scheduled task for section: {{item}}"
+      minute: "{{(item | int * 5) % 60}}"
+      hour: "*"
+      day: "*"
+      month: "*"
+      weekday: "*"
+      job: "/bin/sh -c 'echo {{item}}'"
+      state: absent
+    loop: "{{ lookup('sequence', 'start=1 end={{chunkpersect}}').split(',')}}"
