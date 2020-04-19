@@ -1,0 +1,55 @@
+---
+- hosts: "{{Target}}"
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Install epel and yum utils
+    yum:
+      name:
+        - epel-release
+        - yum-utils
+      state: latest
+  - name: "Install Remi repository"
+    yum:
+      name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+      state: latest
+  - name: "Enable remi-php7.3"
+    command: yum-config-manager --enable remi-php73
+  - name: "Install php pacakges"
+    yum:
+      name:
+        - php
+        - php-common
+        - php-opcache
+        - php-mcrypt
+        - php-cli
+        - php-gd
+        - php-curl
+        - php-mysqlnd
+        - php-zip
+        - wget
+        - unzip
+      state: latest
+  - name: "Downloading composer"
+    command: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - name: "Installing composer"
+    command: php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  - name: "Install laravel"
+    command: /usr/local/bin/composer global require laravel/installer
+  - name: "Install NodeJS repo"
+    shell: curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+  - name: "Install nodejs and supporting packages"
+    yum:
+      name:
+        - nodejs
+        - gcc-c++
+        - make
+      state: latest
+  - name: "Install laravel mix and setup a project"
+    debug
+      msg:
+        - Now that your setup is complete you can get started
+        - mkdir my-app && cd my-app
+        - npm init -y
+        - npm install laravel-mix --save-dev
+        - cp node_modules/laravel-mix/setup/webpack.mix.js ./
