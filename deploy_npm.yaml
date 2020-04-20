@@ -1,0 +1,14 @@
+---
+- hosts: "{{Target}}"
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: "Install NPM repo"
+    shell: curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+  - name: "Install NPM depenencies"
+    yum:
+      name:
+        - nodejs
+        - gcc-c++
+        - make
+      state: latest

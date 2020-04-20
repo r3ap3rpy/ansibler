@@ -1,0 +1,30 @@
+---
+- hosts: "{{Target}}"
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: "Install Dependencies"
+    yum:
+      name:
+        - epel-release
+        - yum-utils
+      state: latest
+  - name: "Install Remi repository"
+    yum:
+      name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+      state: latest
+  - name: Enable remi repo
+    command: yum-config-manager --enable remi-php73
+  - name: "Install PHP core"
+    yum:
+      name:
+        - php
+        - php-common
+        - php-opcache
+        - php-mcrypt
+        - php-cli
+        - php-gd
+        - php-curl
+        - php-mysqlnd
+        - php-zip
+        - unzip
