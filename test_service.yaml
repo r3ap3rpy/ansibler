@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: yes
+  tasks:
+  - name: "Populate service facts"
+    service_facts:
+  - name: "See the service <httpd> facts as they are"
+    debug:
+      msg: "{{ansible_facts.services['httpd.service'].state}}"
+  - name: "Verify if apache is running!"
+    assert:
+      that:
+        - "'{{ansible_facts.services['httpd.service'].state}}' == 'running'"
+      fail_msg: "Apache is down, costs money every minute!"
+      success_msg: "Good to go, money is comming our way"
