@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: "Install paramiko in a virtual environment"
+    pip:
+      name: paramiko
+      virtualenv: /tmp/test
