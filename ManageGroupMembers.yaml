@@ -1,0 +1,12 @@
+- hosts: localhost
+  gather_facts: no
+  vars:
+    state: "{% if ACTION=='ADD'%}present{% elif ACTION=='REMOVE'%}absent{%endif%}"
+  tasks:
+  - name: "{{ACTION}} {{ITEM}} {{GROUP}} in /etc/ansible/hosts"
+    lineinfile:
+      path: /etc/ansible/hosts
+      line: "{{ITEM}}"
+      insertafter: "\\[{{GROUP}}\\]"
+      state: "{{state}}"
+    become: yes
